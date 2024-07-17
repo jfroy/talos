@@ -133,7 +133,7 @@ func (i *Imager) outISO(ctx context.Context, path string, report *reporter.Repor
 
 			var entries []database.Entry
 
-			entries, err = database.Generate(enrolledPEM, signer)
+			entries, err = database.Generate(enrolledPEM, i.prof.Input.SecureBoot.IncludeMicrosoftCerts, signer)
 			if err != nil {
 				return fmt.Errorf("failed to generate database: %w", err)
 			}

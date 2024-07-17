@@ -96,6 +96,8 @@ type SecureBootAssets struct {
 	PlatformKeyPath    string `yaml:"platformKeyPath,omitempty"`
 	KeyExchangeKeyPath string `yaml:"keyExchangeKeyPath,omitempty"`
 	SignatureKeyPath   string `yaml:"signatureKeyPath,omitempty"`
+	// Optional, auto-enrollment include Microsoft certs.
+	IncludeMicrosoftCerts bool `yaml:"includeMicrosoftCerts,omitempty"`
 }
 
 // SigningKeyAndCertificate describes a signing key & certificate.

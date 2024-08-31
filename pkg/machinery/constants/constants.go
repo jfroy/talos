@@ -1071,8 +1071,7 @@ var Overlays = []string{
 
 // DefaultDroppedCapabilities is the default set of capabilities to drop.
 var DefaultDroppedCapabilities = map[string]struct{}{
-	"cap_sys_boot":   {},
-	"cap_sys_module": {},
+	"cap_sys_boot": {},
 }
 
 // UdevdDroppedCapabilities is the set of capabilities to drop for udevd.

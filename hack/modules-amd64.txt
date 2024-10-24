@@ -94,10 +94,12 @@ kernel/drivers/net/thunderbolt/thunderbolt_net.ko
 kernel/drivers/net/vrf.ko
 kernel/drivers/nvme/common/nvme-auth.ko
 kernel/drivers/nvme/common/nvme-keyring.ko
+kernel/drivers/nvme/host/nvme-core.ko
 kernel/drivers/nvme/host/nvme-fabrics.ko
 kernel/drivers/nvme/host/nvme-fc.ko
 kernel/drivers/nvme/host/nvme-rdma.ko
 kernel/drivers/nvme/host/nvme-tcp.ko
+kernel/drivers/nvme/host/nvme.ko
 kernel/drivers/nvme/target/nvme-loop.ko
 kernel/drivers/nvme/target/nvmet-fc.ko
 kernel/drivers/nvme/target/nvmet-rdma.ko

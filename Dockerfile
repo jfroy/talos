@@ -155,6 +155,19 @@ FROM ${PKG_KERNEL} AS pkg-kernel
 FROM --platform=amd64 ${PKG_KERNEL} AS pkg-kernel-amd64
 FROM --platform=arm64 ${PKG_KERNEL} AS pkg-kernel-arm64
 
+FROM scratch AS kernel-signing-key-amd64
+COPY --from=pkg-kernel-amd64 /certs/signing_key.x509 /certs/signing_key.x509
+
+FROM scratch AS kernel-signing-key-arm64
+COPY --from=pkg-kernel-arm64 /certs/signing_key.x509 /certs/signing_key.x509
+
+FROM scratch AS kernel-signing-key-all
+COPY --from=pkg-kernel /certs/signing_key.x509 /certs/signing_key.x509
+
+FROM kernel-signing-key-${TARGETARCH} AS kernel-signing-key-targetarch
+
+FROM kernel-signing-key-${INSTALLER_ARCH} AS kernel-signing-key
+
 FROM --platform=amd64 ${TOOLS} AS tools-amd64
 FROM --platform=arm64 ${TOOLS} AS tools-arm64
 
@@ -380,7 +393,7 @@ RUN mkdir -p _out && \
     echo PKGS=${PKGS} >> _out/talos-metadata && \
     echo TAG=${TAG} >> _out/talos-metadata && \
     echo EXTRAS=${EXTRAS} >> _out/talos-metadata
-COPY --from=pkg-kernel /certs/signing_key.x509 _out/signing_key.x509
+COPY --from=kernel-signing-key /certs/signing_key.x509 _out/signing_key.x509
 
 FROM scratch AS embed-abbrev
 COPY --from=embed-abbrev-generate /src/pkg/machinery/gendata/data /pkg/machinery/gendata/data

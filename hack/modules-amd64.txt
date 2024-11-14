@@ -39,6 +39,8 @@ kernel/drivers/md/dm-cache.ko
 kernel/drivers/md/dm-cache-smq.ko
 kernel/drivers/md/dm-bio-prison.ko
 kernel/drivers/md/dm-bufio.ko
+kernel/drivers/md/dm-cache-smq.ko
+kernel/drivers/md/dm-cache.ko
 kernel/drivers/md/dm-historical-service-time.ko
 kernel/drivers/md/dm-integrity.ko
 kernel/drivers/md/dm-io-affinity.ko

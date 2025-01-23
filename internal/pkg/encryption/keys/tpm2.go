@@ -8,6 +8,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"io"
 
@@ -15,9 +16,12 @@ import (
 	"github.com/siderolabs/go-blockdevice/v2/encryption"
 	"github.com/siderolabs/go-blockdevice/v2/encryption/luks"
 	"github.com/siderolabs/go-blockdevice/v2/encryption/token"
+	"go.uber.org/zap"
 
 	"github.com/siderolabs/talos/internal/pkg/secureboot"
 	"github.com/siderolabs/talos/internal/pkg/secureboot/tpm2"
+
+	gotpm2 "github.com/google/go-tpm/tpm2"
 )
 
 // TPMToken is the userdata stored in the partition token metadata.
@@ -85,7 +89,7 @@ func (h *TPMKeyHandler) NewKey(ctx context.Context) (*encryption.Key, token.Toke
 }
 
 // GetKey implements Handler interface.
-func (h *TPMKeyHandler) GetKey(ctx context.Context, t token.Token) (*encryption.Key, error) {
+func (h *TPMKeyHandler) GetKey(ctx context.Context, logger *zap.Logger, t token.Token) (*encryption.Key, error) {
 	token, ok := t.(*luks.Token[*TPMToken])
 	if !ok {
 		return nil, ErrTokenInvalid
@@ -98,9 +102,18 @@ func (h *TPMKeyHandler) GetKey(ctx context.Context, t token.Token) (*encryption.
 		KeyName:           token.UserData.KeyName,
 	}
 
-	key, err := tpm2.Unseal(sealed)
-	if err != nil {
-		return nil, err
+	var key []byte
+	for {
+		var err error
+		key, err = tpm2.Unseal(sealed)
+		if err == nil {
+			break
+		}
+		if errors.Is(err, gotpm2.TPMRCPCRChanged) {
+			logger.Warn("retrying tpm unseal after TPM_RC_PCR_CHANGED error")
+		} else {
+			return nil, err
+		}
 	}
 
 	return encryption.NewKey(h.slot, []byte(base64.StdEncoding.EncodeToString(key))), nil

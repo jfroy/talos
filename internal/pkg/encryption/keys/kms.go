@@ -17,6 +17,7 @@ import (
 	"github.com/siderolabs/go-blockdevice/v2/encryption/luks"
 	"github.com/siderolabs/go-blockdevice/v2/encryption/token"
 	"github.com/siderolabs/kms-client/api/kms"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
@@ -88,7 +89,7 @@ func (h *KMSKeyHandler) NewKey(ctx context.Context) (*encryption.Key, token.Toke
 }
 
 // GetKey implements Handler interface.
-func (h *KMSKeyHandler) GetKey(ctx context.Context, t token.Token) (*encryption.Key, error) {
+func (h *KMSKeyHandler) GetKey(ctx context.Context, _ *zap.Logger, t token.Token) (*encryption.Key, error) {
 	token, ok := t.(*luks.Token[*KMSToken])
 	if !ok {
 		return nil, ErrTokenInvalid

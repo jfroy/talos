@@ -103,7 +103,7 @@ func (h *Handler) Open(ctx context.Context, logger *zap.Logger, devicePath, encr
 				return nil, nil, err
 			}
 
-			slotKey, err := handler.GetKey(ctx, slotToken)
+			slotKey, err := handler.GetKey(ctx, logger, slotToken)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -269,7 +269,7 @@ func (h *Handler) checkKey(ctx context.Context, path string, handler keys.Handle
 		return false, err
 	}
 
-	key, err := handler.GetKey(ctx, token)
+	key, err := handler.GetKey(ctx, nil, token)
 	if err != nil {
 		if errors.Is(err, keys.ErrTokenInvalid) {
 			return false, nil

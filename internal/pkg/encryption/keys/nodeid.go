@@ -10,6 +10,7 @@ import (
 
 	"github.com/siderolabs/go-blockdevice/v2/encryption"
 	"github.com/siderolabs/go-blockdevice/v2/encryption/token"
+	"go.uber.org/zap"
 
 	"github.com/siderolabs/talos/internal/pkg/encryption/helpers"
 )
@@ -33,13 +34,13 @@ func NewNodeIDKeyHandler(key KeyHandler, partitionLabel string, systemInfoGetter
 
 // NewKey implements Handler interface.
 func (h *NodeIDKeyHandler) NewKey(ctx context.Context) (*encryption.Key, token.Token, error) {
-	k, err := h.GetKey(ctx, nil)
+	k, err := h.GetKey(ctx, nil, nil)
 
 	return k, nil, err
 }
 
 // GetKey implements Handler interface.
-func (h *NodeIDKeyHandler) GetKey(ctx context.Context, _ token.Token) (*encryption.Key, error) {
+func (h *NodeIDKeyHandler) GetKey(ctx context.Context, _ *zap.Logger, _ token.Token) (*encryption.Key, error) {
 	systemInformation, err := h.getSystemInfo(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get UUID: %w", err)

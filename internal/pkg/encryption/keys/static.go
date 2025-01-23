@@ -9,6 +9,7 @@ import (
 
 	"github.com/siderolabs/go-blockdevice/v2/encryption"
 	"github.com/siderolabs/go-blockdevice/v2/encryption/token"
+	"go.uber.org/zap"
 )
 
 // StaticKeyHandler just handles the static key value all the time.
@@ -27,12 +28,12 @@ func NewStaticKeyHandler(key KeyHandler, data []byte) *StaticKeyHandler {
 
 // NewKey implements Handler interface.
 func (h *StaticKeyHandler) NewKey(ctx context.Context) (*encryption.Key, token.Token, error) {
-	k, err := h.GetKey(ctx, nil)
+	k, err := h.GetKey(ctx, nil, nil)
 
 	return k, nil, err
 }
 
 // GetKey implements Handler interface.
-func (h *StaticKeyHandler) GetKey(context.Context, token.Token) (*encryption.Key, error) {
+func (h *StaticKeyHandler) GetKey(context.Context, *zap.Logger, token.Token) (*encryption.Key, error) {
 	return encryption.NewKey(h.slot, h.data), nil
 }

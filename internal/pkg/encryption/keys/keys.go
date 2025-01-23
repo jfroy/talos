@@ -12,6 +12,7 @@ import (
 
 	"github.com/siderolabs/go-blockdevice/v2/encryption"
 	"github.com/siderolabs/go-blockdevice/v2/encryption/token"
+	"go.uber.org/zap"
 
 	"github.com/siderolabs/talos/pkg/machinery/resources/block"
 )
@@ -57,7 +58,7 @@ func NewHandler(cfg block.EncryptionKey, options ...KeyOption) (Handler, error) 
 // Handler manages key lifecycle.
 type Handler interface {
 	NewKey(context.Context) (*encryption.Key, token.Token, error)
-	GetKey(context.Context, token.Token) (*encryption.Key, error)
+	GetKey(context.Context, *zap.Logger, token.Token) (*encryption.Key, error)
 	Slot() int
 }
 
